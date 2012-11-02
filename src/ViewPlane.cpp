@@ -2,13 +2,14 @@
 
 ViewPlane::ViewPlane(unsigned int w, unsigned int h)
 {
+	float ar = h/(float)w;
     this->width = w;
     this->height = h;
     color = new Vector3<float>[w*h];
     this->rect.l = -4;
     this->rect.r = 4;
-    this->rect.b = -3;
-    this->rect.t = 3;
+    this->rect.b = -4*ar;
+    this->rect.t = 4*ar;
 }
 
 ViewPlane::~ViewPlane()

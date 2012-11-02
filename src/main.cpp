@@ -2,7 +2,7 @@
 #include <cstring>
 #include <time.h>
 
-#include <glm/glm.hpp>
+#include "glm/glm.hpp"
 
 #include "Vector3.h"
 #include "Scene.h"
@@ -12,19 +12,23 @@
 #include "Primitive.h"
 #include "Plane.h"
 #include "Sphere.h"
+#include "BMPWriter.h"
 
-#include <pngWriter.h>
+#include "Windows.h"
 
-int wWidth = 800;
-int wHeight = 600;
+
+//#include <pngWriter.h>
+
+int wWidth = 400;
+int wHeight = 300;
 const char* wTitle = "title";
 
 RTEngine* renderEngine = NULL;
 Vector3<float> color;
 
 unsigned int fps = 0;
-time_t start, stop;
-time_t tFrame;
+DWORD  start, stop;
+DWORD  tFrame;
 
 int main(int argc, char** argv)
 {
@@ -33,7 +37,7 @@ int main(int argc, char** argv)
     mainScene->Init();
 
     // create an image plane
-    ViewPlane* viewplane = new ViewPlane(800, 600);
+    ViewPlane* viewplane = new ViewPlane(wWidth, wHeight);
 
     // setup rendering engine
     renderEngine = new RTEngine(viewplane, mainScene);
@@ -42,28 +46,46 @@ int main(int argc, char** argv)
     wHeight = renderEngine->GetViewPlane()->GetHeight();
 
     // count time
-    start = time(NULL);
-    tFrame = time(0);
+    start = GetTickCount();
+    tFrame = GetTickCount();
 
     // render an image
     renderEngine->Render();
 
-    tFrame = time(0) - tFrame;
+    tFrame = GetTickCount() - tFrame;
 
-    std::cout << tFrame << " sec/frame" << std::endl;
+    std::cout << tFrame << " ms/frame" << std::endl;
 
-//  code for write png image by using GetColor(i,j) looping for each pixel
-//    pngwriter* img = new pngwriter(wWidth, wHeight, 0, "RT.png");
-//    for(int j = 0; j < wHeight; j++)
-//    {
-//        for(int i = 0; i < wWidth; i++)
-//        {
-//            color = renderEngine->GetViewPlane()->GetColor(i,j);
-//            img->plot(i,j, color[0], color[1], color[2]);
-//        }
-//    }
-//    img->close();
-//    delete img;
+ // code for write bmp image by using GetColor(i,j) looping for each pixel
+    BMPWriter img1(wWidth, wHeight);
+    BMPWriter img2(wWidth, wHeight);
+    BMPWriter img3(wWidth, wHeight);
+    BMPWriter img4(wWidth, wHeight);
+    for(int j = 0; j < wHeight; j++)
+    {
+        for(int i = 0; i < wWidth; i++)
+        {
+            color = renderEngine->GetViewPlane()->GetColor(i,j);
+            img1.setPixel(i,j, color);
+			img2.setPixel(i,j, color);
+			img3.setPixel(i,j, color);
+			img4.setPixel(i,j, color);
+        }
+    }
+	img2.scale();
+	img3.scale(0);
+	img3.scale(0);
+	img3.scale(0);
+	img3.scale(0);
+	img3.scale(0);
+	for(int i = 0;i<30;i++){
+		img4.scale(0);
+	}
+	
+    img1.save("test1.bmp");
+    img2.save("test2.bmp");
+    img3.save("test3.bmp");
+    img4.save("test4.bmp");
 
     return 1;
 }

@@ -1,5 +1,7 @@
 #include "RTEngine.h"
 
+
+
 RTEngine::RTEngine()
 {
 
@@ -58,6 +60,7 @@ Primitive* RTEngine::RayTrace(const Ray& iRay, Color3& oColor, int iDepth, float
     if(object->IsLight())
     {
         oColor = object->GetMaterial()->GetColor();
+		return object;
     }
     else
     {
@@ -66,7 +69,7 @@ Primitive* RTEngine::RayTrace(const Ray& iRay, Color3& oColor, int iDepth, float
         // trace back to light
         // find shadow and local illumination
         unsigned int numObject = this->scene->GetNumObject();
-        for(unsigned int i = 0; i < numObject; i++)
+        for(unsigned int i = 0; i < numObject ; i++)
         {
             Primitive* light = this->scene->GetObject(i);
             if(light->IsLight())
@@ -80,69 +83,44 @@ Primitive* RTEngine::RayTrace(const Ray& iRay, Color3& oColor, int iDepth, float
                     Vector3<float> lightDir = ((Sphere*)light)->GetCenter() - pInts;
                     float tdist = lightDir.Length();
                     lightDir *= (1.0f / tdist);
-                    Ray rrr = Ray(pInts + lightDir*EPSILON, lightDir);
+                    Ray rayToLight = Ray(pInts + lightDir*EPSILON, lightDir);
                     for(unsigned int j = 0; j < numObject; j++)
                     {
                         Primitive* tmpPrim = this->scene->GetObject(j);
-                        if((tmpPrim != light) && (tmpPrim->Intersect(rrr, tdist)))
+                        if((tmpPrim != light) && (tmpPrim->Intersect(rayToLight, tdist)))
                         {
                             shade = 0.0f;
                             break;
                         }
                     }
-                }
-                // since if it is shadow, it is not necessary to calculate shading
-                if(shade > EPSILON)
-                {
-                    // diffuse shading
-                    Vector3<float> lightDir = ((Sphere*)light)->GetCenter() - pInts;
-                    Vector3<float> normal = (object)->GetNormal(pInts);
-                    lightDir.Normalize();
-                    float objDiffuse = object->GetMaterial()->GetDiffuse();
-                    if(objDiffuse > 0.0f)
-                    {
-                        float dot = Dot(lightDir, normal);
-                        if(dot > 0.0f)
-                        {
-                            float diffuse = dot * objDiffuse * shade;
-                            oColor += (object->GetMaterial()->GetColor() * light->GetMaterial()->GetColor())*diffuse;
-                        }
-                    }
-                    // specular hightlight
-                    float objSpecular = object->GetMaterial()->GetSpecular();
-                    if(objSpecular > 0.0f)
-                    {
-                        Vector3<float> vecV = iRay.GetDir();
-                        // reflected ray from light to eye
-                        Vector3<float> vecR = lightDir - normal*( 2.0f * Dot(lightDir, normal) );
-                        float dot = Dot(vecV, vecR);
-                        if(dot > 0.0f)
-                        {
-                            float specular = powf(dot, 20.0f) * objSpecular * shade;
-                            oColor += (light->GetMaterial()->GetColor() * specular);
-                        }
-                    }
+					if(shade > EPSILON){
+						oColor = light->GetMaterial()->GetColor() * object->GetMaterial()->BRDF(pInts,iRay.GetDir(),object->GetNormal(pInts),rayToLight.GetDir());
+					}
                 }
 
             }
         }
         // add reflecting
         float reflect = object->GetMaterial()->GetReflect();
-        if(reflect > 0.0f)
+        if(true)
         {
             Vector3<float> normal = object->GetNormal(pInts);
-            Vector3<float> reflectRay = iRay.GetDir() -  normal *(2.0f * (Dot(iRay.GetDir(), normal)));
+            //Vector3<float> reflectRay = iRay.GetDir() -  normal *(2.0f * (Dot(iRay.GetDir(), normal)));
+			Ray oRay;
+			Color3 reflectance = object->GetMaterial()->randomReflection(pInts,iRay.GetDir(),normal,oRay);
             if(iDepth < TRACEDEPTH)
             {
                 Color3 colorRefl(0,0,0);
                 float tmpDist;
-                this->RayTrace(Ray(pInts + reflectRay*EPSILON, reflectRay), colorRefl, iDepth+1, iRIndex, tmpDist);
-                oColor +=  (object->GetMaterial()->GetColor() * colorRefl) * reflect;
+              //  this->RayTrace(Ray(pInts + reflectRay*EPSILON, reflectRay), colorRefl, iDepth+1, iRIndex, tmpDist);
+				this->RayTrace(Ray(oRay.GetOrigin() + oRay.GetDir()*EPSILON, oRay.GetDir()), colorRefl, iDepth+1, iRIndex, tmpDist);
+				oColor += reflectance*colorRefl;
+                //oColor +=  (object->GetMaterial()->GetColor() * colorRefl) * reflect;
             }
         }
-        // add refracting
+        //// add refracting
         float refract = object->GetMaterial()->GetRefract();
-        if( (refract > 0) && (iDepth < TRACEDEPTH) )
+        if((refract > 0) && (iDepth < TRACEDEPTH) )
         {
             float rIndex = object->GetMaterial()->GetRefractInd();
             float n = iRIndex / rIndex;
@@ -177,28 +155,38 @@ bool RTEngine::Render()
     unsigned int height = this->view->GetHeight();
     unsigned int width = this->view->GetWidth();
     const Rect coord = this->view->GetCoordinate();
-    float psx, psy;
+   // float psx, psy;
     // psy, psx : running variable for each pixel
     // it is a position on an image plane
     // notice that it runs from bottom left
-    psy = coord.b;
+ //   psy = coord.b;
     for(unsigned int y = 0; y < height; y++)
     {
-        psx = coord.l;
-        for(unsigned int x = 0; x < width; x++)
+		std::cout << y / (0.01f * height) << "%" << std::endl;
+		#pragma omp parallel for
+        for(int x = 0; x < width; x++)
         {
-            Vector3<float> pColor;
-            // setting up a ray
-            Vector3<float> dir = Vector3<float>(psx, psy, 0.0) - camera;
-            dir.Normalize();
-            Ray ray(camera,dir);
-            // tracing the ray
-            float dist;
-            this->RayTrace(ray, pColor, 1, 1.0, dist);
-            this->view->SetColor(pColor, x, y);
-            psx += pdx;
+			Vector3<float> pColor;
+            for(int i = 0;i<SAMPLES_PER_PIXEL;i++){
+				float rx = rand()/(float)RAND_MAX;
+				float ry = rand()/(float)RAND_MAX;
+				float psx = coord.l + (rx+x)*pdx;
+				float psy = coord.b + (ry+y)*pdy;
+				// setting up a ray
+				Vector3<float> dir = Vector3<float>(psx, psy, 0.0) - camera;
+				dir.Normalize();
+				Ray ray(camera,dir);
+				// tracing the ray
+				float dist;
+				Vector3<float> tmpColor;
+				this->RayTrace(ray, tmpColor, 1, 1.0, dist);
+				pColor += tmpColor;
+			}
+			this->view->SetColor(pColor/SAMPLES_PER_PIXEL, x, y);
+			//std::cout << "Pixel " << x << " " << y  << " done!" << std::endl;
+           // psx += pdx;
         }
-        psy += pdy;
+      //  psy += pdy;
     }
     return true;
 }

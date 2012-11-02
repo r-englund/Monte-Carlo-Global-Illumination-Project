@@ -9,6 +9,9 @@
 #include "ViewPlane.h"
 #include "Scene.h"
 
+#define OMP_NUM_THREADS 8
+
+#define SAMPLES_PER_PIXEL 150
 #define TRACEDEPTH     6
 
 #define PRIMARY         1
