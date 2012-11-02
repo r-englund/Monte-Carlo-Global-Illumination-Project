@@ -19,7 +19,7 @@ void BMPWriter::setPixel(int x,int y,Vector3<float> color){
 }
 
 float ScaleInput(float t){
-	return log(1+t);
+	return t;
 }
 
 void BMPWriter::save(const char * filename){
