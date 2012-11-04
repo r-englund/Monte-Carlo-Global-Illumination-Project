@@ -65,8 +65,10 @@
   <ItemGroup>
     <ClCompile Include="..\src\BMPWriter.cpp" />
     <ClCompile Include="..\src\BRDF.cpp" />
+    <ClCompile Include="..\src\Camera.cpp" />
     <ClCompile Include="..\src\main.cpp" />
     <ClCompile Include="..\src\Plane.cpp" />
+    <ClCompile Include="..\src\RandomGenerator.cpp" />
     <ClCompile Include="..\src\RTEngine.cpp" />
     <ClCompile Include="..\src\Scene.cpp" />
     <ClCompile Include="..\src\Sphere.cpp" />
@@ -75,8 +77,11 @@
   <ItemGroup>
     <ClInclude Include="..\src\BMPWriter.h" />
     <ClInclude Include="..\src\BRDF.h" />
+    <ClInclude Include="..\src\Camera.h" />
+    <ClInclude Include="..\src\includes.h" />
     <ClInclude Include="..\src\Plane.h" />
     <ClInclude Include="..\src\Primitive.h" />
+    <ClInclude Include="..\src\RandomGenerator.h" />
     <ClInclude Include="..\src\Ray.h" />
     <ClInclude Include="..\src\RTEngine.h" />
     <ClInclude Include="..\src\Scene.h" />
