@@ -1,33 +1,16 @@
 #ifndef PRIMITIVE_H_
 #define PRIMITIVE_H_
 
-#include "Ray.h"
-#include <cstring>
-#include "BRDF.h"
+#include "includes.h"
 
-
-#define EPSILON         0.01
+#define SPHERE          10
+#define PLANE           11
 
 #define HIT             1
 #define MISS            0
 #define INSIDE          -1
 
-#define SPHERE          10
-#define PLANE           11
-
-
-
-//
-//class IPrimitive
-//{
-//    public :
-//        virtual ~IPrimitive(){}
-//        virtual int GetType() = 0;
-//        virtual int Intersect(const Ray& ray, float& dist) = 0;
-//        virtual const Vector3<float> GetNormal(const Vector3<float>& pNor) = 0;
-//};
-
-class Primitive //: public IPrimitive
+class Primitive
 {
     protected :
         Material* material;

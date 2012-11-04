@@ -1,4 +1,4 @@
-#include "Sphere.h"
+#include "includes.h"
 
 Sphere::Sphere(const Vector3<float>& c, float r) : Primitive()
 {
@@ -10,35 +10,8 @@ Sphere::Sphere(const Vector3<float>& c, float r) : Primitive()
 
 int Sphere::Intersect(const Ray& iRay, float& ioDist)
 {
-//    Vector3<float> oc = iRay.GetOrigin() - this->center;
-//    float cos =  -Dot(oc, iRay.GetDir());
-//    float det = (cos*cos) - ( Dot(oc,oc) ) + this->radius2;
-//    int ret = MISS;
-//    if(det > 0)
-//    {
-//        det = sqrt(det);
-//        float i1 = cos - det;
-//        float i2 = cos + det;
-//        if( i2 > 0 )
-//        {
-//            if( i1 < 0 )
-//            {
-//                if( i2 < ioDist )
-//                {
-//                    ioDist = i2;
-//                    ret = INSIDE;
-//                }
-//            }
-//            else
-//            {
-//                if( i1 < ioDist)
-//                {
-//                    ioDist = i1;
-//                    ret = HIT;
-//                }
-//            }
-//        }
-//    }
+	if(this == iRay.GetOriginObject())
+		return MISS;
     int ret = MISS;
     Vector3<float> o_c(iRay.GetOrigin() - this->center);
     float a = Dot(iRay.GetDir(), iRay.GetDir());

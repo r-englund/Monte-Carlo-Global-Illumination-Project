@@ -1,4 +1,4 @@
-#include "ViewPlane.h"
+#include "includes.h"
 
 ViewPlane::ViewPlane(unsigned int w, unsigned int h)
 {

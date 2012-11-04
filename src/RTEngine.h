@@ -1,23 +1,10 @@
 #ifndef RTENGINE_H_
 #define RTENGINE_H_
 
-#include <limits>
-#include <iostream>
-#include <queue>
+#include "includes.h"
 
-#include "Ray.h"
-#include "ViewPlane.h"
-#include "Scene.h"
-
-#define OMP_NUM_THREADS 8
-
-#define SAMPLES_PER_PIXEL 150
-#define TRACEDEPTH     6
-
-#define PRIMARY         1
-#define REFLECT         2
-#define REFRACT         3
-
+class ViewPlane;
+class Scene;
 class RTEngine
 {
     protected :

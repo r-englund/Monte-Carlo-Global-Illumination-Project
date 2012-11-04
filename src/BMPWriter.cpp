@@ -1,4 +1,4 @@
-#include "BMPWriter.h"
+#include "includes.h"
 
 template<typename T>  T clamp(T a,T b,T c){
 	if(a <= b) return b;
@@ -47,6 +47,7 @@ void BMPWriter::save(const char * filename){
     infoheader.nimpcolors = 0;
 
     FILE *f = fopen(filename,"wb");
+	std::cout << filename << std::endl;
     assert(f != NULL);
     fwrite(&mp,sizeof(BMPMAGIC),1,f);
     fwrite(&bmpheader,sizeof(BMPHEADER),1,f);

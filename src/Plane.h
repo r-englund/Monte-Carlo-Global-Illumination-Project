@@ -1,7 +1,7 @@
 #ifndef PLANE_H_
 #define PLANE_H_
 
-#include "Primitive.h"
+#include "includes.h"
 
 class Plane : public Primitive
 {

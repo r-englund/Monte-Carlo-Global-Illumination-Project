@@ -1,15 +1,10 @@
 #ifndef SCENE_H_
 #define SCENE_H_
 
-#include <vector>
-#include <iostream>
-#include "Vector3.h"
-#include "Primitive.h"
-#include "Plane.h"
-#include "Sphere.h"
-
+#include "includes.h"
 
 #define SC_SUCCESS          0
+
 
 class Scene
 {
@@ -22,12 +17,14 @@ class Scene
         Primitive* GetObject(unsigned int index){ return object[index];}
 
         const Color3& GetBGColor(){ return this->bgColor;}
+		Camera* getCamera(){return cam;}
 
     private :
         // objects in the scene
         std::vector<Primitive*> object;
         // background color
         Color3 bgColor;
+		Camera *cam;
 };
 
 #endif

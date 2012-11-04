@@ -1,8 +1,7 @@
 #ifndef SPHERE_H_
 #define SPHERE_H_
 
-#include "Primitive.h"
-#include <cmath>
+#include "includes.h"
 
 class Sphere : public Primitive
 {
@@ -22,7 +21,6 @@ class Sphere : public Primitive
         virtual int GetType(){return SPHERE;};
         virtual int Intersect(const Ray& ray, float& dist);
         virtual const Vector3<float> GetNormal(const Vector3<float>& pNor);
-
 
 };
 

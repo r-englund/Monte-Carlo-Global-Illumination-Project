@@ -1,4 +1,4 @@
-#include "Plane.h"
+#include "includes.h"
 
 Plane::Plane(const Vector3<float>& normal, float d) : Primitive()
 {
@@ -22,23 +22,8 @@ Plane::Plane(const Plane& plane)
 
 int Plane::Intersect(const Ray& iRay, float& ioDist)
 {
-    // Normal . Point = distance        : Point = o + dt
-    // find t : paramT which satisfies -->  Normal . PPoint = -DistP
-    // paramT = -( Normal.o + DistP ) / N.d
-//    float n_d = this->Normal.Dot(iRay.GetDir());
-//    if( fabs(n_d) > EPSILON)
-//    {
-//        float paramT = -(this->Normal.Dot(iRay.GetOrigin()) + this->DistP) / n_d;
-//        if(paramT > 0)
-//        {
-//            if( paramT < ioDist)
-//            {
-//                ioDist = paramT;
-//                return HIT;
-//            }
-//        }
-//    }
-
+	if(this == iRay.GetOriginObject())
+		return MISS;
     // (p - a).n = 0 : p (intersection point), a (point on plane), n (plane normal)
     // find t : paramT which satisfies --> (p-a).n = 0 , (o + dt - a).n = 0
     // paramT = (PPoint - Origin).Normal / Normal.Direction

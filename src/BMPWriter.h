@@ -1,8 +1,7 @@
 #ifndef  _BMPWRITER_H_
 #define  _BMPWRITER_H_
 
-#include "Vector3.h"
-#include <stdint.h>
+#include "includes.h"
 
 struct BMPMAGIC{
     unsigned char magic[2];
@@ -63,6 +62,13 @@ public:
 				max = data[i];
 		}
 		return max;
+	}
+
+	void flat(){
+		float max = getMaxPixelValue();
+		for(int i = 0;i<width*height*3;i++){
+			data[i] /= max;
+		}
 	}
 
 	void scale(float scale = 0){

@@ -1,10 +1,6 @@
 #ifndef VECTOR3_H_
 #define VECTOR3_H_
 
-#include <cmath>
-#include <cstdlib>
-#include <iostream>
-#include <assert.h>
 
 template <typename T>
 class Vector3
@@ -158,6 +154,17 @@ class Vector3
         {
             T dot = v1[0]*T(v2[0]) + v1[1]*T(v2[1]) + v1[2]*T(v2[2]);
             return dot;
+        }
+
+        template <typename T2>
+        friend Vector3<T> Cross(const Vector3<T>& v1, const Vector3<T2>& v2)
+        {
+            Vector3<T> v;
+			v[0] = v1[1]*v2[2] - v1[2]*v2[1];
+			v[1] = v1[2]*v2[0] - v1[0]*v2[2];
+			v[2] = v1[0]*v2[1] - v1[1]*v2[0];
+
+            return v;
         }
 
         const T Length() const
