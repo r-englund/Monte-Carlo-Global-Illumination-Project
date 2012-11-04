@@ -1,8 +1,10 @@
-#include "BRDF.h"
-#include "glm/glm.hpp"
-#include "glm/gtc/matrix_transform.hpp"
+#include "includes.h"
 
 Vector3<float> DiffuseBRDF::BRDF(const Vector3<float>& pos,const Vector3<float>& iDirection,const Vector3<float>& iNormal,const Vector3<float>& oDirection){
+	assert(floatEquals(iNormal.Length2(),1));
+	assert(floatEquals(oDirection.Length2(),1));
+	assert(floatEquals(iDirection.Length2(),1));
+	
 	float i = Dot(iNormal,oDirection);
 	if(i < 0)
 		return Vector3<float>(0,0,0);
@@ -10,6 +12,9 @@ Vector3<float> DiffuseBRDF::BRDF(const Vector3<float>& pos,const Vector3<float>&
 }
 
 Vector3<float> DiffuseBRDF::randomReflection(const Vector3<float>& pos,const Vector3<float>& iDirection,const Vector3<float>& iNormal,Ray& oRay){
+	assert(floatEquals(iNormal.Length2(),1));
+	assert(floatEquals(iDirection.Length2(),1));
+
 	float azimuth,elevation;
 	azimuth   = 2*3.1415*(rand()/(float)(RAND_MAX));
 	elevation = acos(sqrt((rand()/(double)(RAND_MAX))));
@@ -27,6 +32,10 @@ Vector3<float> DiffuseBRDF::randomReflection(const Vector3<float>& pos,const Vec
 }
 
 Vector3<float> PhongBRDF::BRDF(const Vector3<float>& pos,const Vector3<float>& iDirection,const Vector3<float>& iNormal,const Vector3<float>& oDirection){
+	assert(floatEquals(iNormal.Length2(),1));
+	assert(floatEquals(oDirection.Length2(),1));
+	assert(floatEquals(iDirection.Length2(),1));
+
 	float i = Dot(iNormal,oDirection);
 	if(i < 0)
 		return Vector3<float>(0,0,0);
@@ -34,6 +43,9 @@ Vector3<float> PhongBRDF::BRDF(const Vector3<float>& pos,const Vector3<float>& i
 }
 
 Vector3<float> PhongBRDF::randomReflection(const Vector3<float>& pos,const Vector3<float>& iDirection,const Vector3<float>& iNormal,Ray& oRay){
+	assert(floatEquals(iNormal.Length2(),1));
+	assert(floatEquals(iDirection.Length2(),1));
+
 	oRay.SetOrigin(pos);
 	oRay.SetDir(iDirection -  iNormal *(2.0f * (Dot(iDirection, iNormal))));
 	return BRDF(pos,iDirection,iNormal,oRay.GetDir());
