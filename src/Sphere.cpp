@@ -1,6 +1,6 @@
 #include "includes.h"
 
-Sphere::Sphere(const Vector3<float>& c, float r) : Primitive()
+Sphere::Sphere(Material *m,const Vector3<float>& c, float r) : Primitive(m)
 {
     this->center = c;
     this->radius = r;

@@ -17,9 +17,6 @@ float RandomGenerator::GetRandom(){
 	if(!seeded[thread]){
 		seeded[thread]= true;
 		srand((unsigned)time(0));
-		std::cout << thread << std::endl;
-	}else{
-		
 	}
 	return rand() / (float) RAND_MAX;
 }

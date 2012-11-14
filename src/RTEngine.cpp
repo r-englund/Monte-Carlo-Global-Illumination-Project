@@ -59,6 +59,8 @@ Primitive* RTEngine::RayTrace(const Ray& iRay, Color3& oColor, int iDepth, float
         return 0;
     }
 	
+	float localLight = 0.3;
+
     pInts = iRay.GetOrigin() + (iRay.GetDir() * oDist );
 
     if(object->IsLight())
@@ -67,10 +69,11 @@ Primitive* RTEngine::RayTrace(const Ray& iRay, Color3& oColor, int iDepth, float
 		if(object->GetType() == SPHERE){
 			assert(floatEquals(iRay.GetDir().Length2(),1));
 			assert(floatEquals(object->GetNormal(pInts).Length2(),1));
-			d = 0-Dot(iRay.GetDir() , object->GetNormal(pInts));
-			d *= 0.2;
-			d += 1-0.2;
-			//std::cout << d << std::endl;
+			if(object->GetType() == SPHERE){
+				d = Dot(Vector3<float>()-iRay.GetDir() , object->GetNormal(pInts));
+				d *= 0.2;
+				d += 1-0.2;
+			}
 		}
         oColor = object->GetMaterial()->GetColor() * d;
 		return object;
@@ -116,17 +119,62 @@ Primitive* RTEngine::RayTrace(const Ray& iRay, Color3& oColor, int iDepth, float
 						float d = Dot(dirToLight,rayFromLight.GetDir());
 						oColor += light->GetMaterial()->GetColor() * 
 								  object->GetMaterial()->BRDF(pInts,iRay.GetDir(),object->GetNormal(pInts),dirToLight) *
-								  d;//iDepth / (float)TRACEDEPTH;
+								  d*localLight;//iDepth / (float)TRACEDEPTH;
 					}
-				}else{
-					assert("Only sphereical light are supported at the moment" && false);
+				}else if(light->GetType() == QUAD){
+                    Quad* quad = dynamic_cast<Quad*>(light);
+					Vector3<float> dirToLight = quad->getRandomPointOnSurface() - pInts;
+					
+					float tdist = dirToLight.Length();
+                    dirToLight *= (1.0f / tdist);
+                    Ray rayToLight = Ray(pInts, dirToLight);
+					rayToLight.SetOriginObject(object);
+                    for(unsigned int j = 0; j < numObject; j++)
+                    {
+                        Primitive* tmpPrim = this->scene->GetObject(j);
+                        if((tmpPrim != light) && (tmpPrim->Intersect(rayToLight, tdist)))
+                        {
+                            shade = 0.0f;
+                            break;
+                        }
+                    }
+					if(shade > EPSILON)
+						oColor += light->GetMaterial()->GetColor() * object->GetMaterial()->BRDF(pInts,Vector3<float>()-iRay.GetDir(),object->GetNormal(pInts),dirToLight)*localLight;
 				}
 
             }
         }
         // add reflecting
         //float reflect = object->GetMaterial()->GetReflect();
-        if(true)
+        float refract = object->GetMaterial()->GetRefract();
+
+		if((refract > 0) && (iDepth < TRACEDEPTH) )
+        {
+            float rIndex = object->GetMaterial()->GetRefractInd();
+			if(ret==-1)
+				rIndex = 1.0/rIndex;
+            float n = iRIndex / rIndex;
+            Vector3<float> normal = object->GetNormal(pInts) * (float)ret;
+			
+            float cosI = -Dot(normal, iRay.GetDir());
+            float cosT2 = 1.0f - n*n*(1.0f - cosI * cosI);
+            if(cosT2 > 0.0f){
+                Vector3<float> T = (iRay.GetDir()*n) + (normal*(n*cosI-sqrtf(cosT2)));
+                Color3 colorRefr(0,0,0);
+                float tmpDist;
+				Ray ray(pInts,T);
+				ray.SetOriginObject(object);
+                this->RayTrace(ray, colorRefr, iDepth+1, rIndex, tmpDist);
+                // Beer's law
+                Color3 absorb = object->GetMaterial()->GetColor();// * 0.15 * (-tmpDist);
+                Color3 transparancy(expf(absorb[0]), expf(absorb[1]), expf(absorb[2]));
+                oColor += colorRefr * transparancy*(1-localLight)*(refract);
+			}else{
+				refract = 0;
+			}
+        }
+
+        if(refract != 1)
         {
             Vector3<float> normal = object->GetNormal(pInts);
 
@@ -139,32 +187,11 @@ Primitive* RTEngine::RayTrace(const Ray& iRay, Color3& oColor, int iDepth, float
 				Ray ray(oRay.GetOrigin(), oRay.GetDir());
 				ray.SetOriginObject(object);
 				if(this->RayTrace(ray, colorRefl, iDepth+1, iRIndex, tmpDist))
-					oColor += reflectance*colorRefl;
+					oColor += reflectance*colorRefl*(1-localLight)*(1-refract);
             }
         }
         //// add refracting
-        float refract = object->GetMaterial()->GetRefract();
-        if((refract > 0) && (iDepth < TRACEDEPTH) )
-        {
-            float rIndex = object->GetMaterial()->GetRefractInd();
-            float n = iRIndex / rIndex;
-            Vector3<float> normal = object->GetNormal(pInts) * (float)ret;
-            float cosI = -Dot(normal, iRay.GetDir());
-            float cosT2 = 1.0f - n*n*(1.0f - cosI * cosI);
-            if(cosT2 > 0.0f)
-            {
-                Vector3<float> T = (iRay.GetDir()*n) + (normal*(n*cosI-sqrtf(cosT2)));
-                Color3 colorRefr(0,0,0);
-                float tmpDist;
-				Ray ray(pInts,T);
-				ray.SetOriginObject(object);
-                this->RayTrace(ray, colorRefr, iDepth+1, rIndex, tmpDist);
-                // Beer's law
-                Color3 absorb = object->GetMaterial()->GetColor() * 0.15 * (-tmpDist);
-                Color3 transparancy(expf(absorb[0]), expf(absorb[1]), expf(absorb[2]));
-                oColor += colorRefr * transparancy;
-            }
-        }
+        
 
     }
     return object;
@@ -188,7 +215,7 @@ bool RTEngine::Render()
 
     for(unsigned int y = 0; y < height; y++)
     {
-		//std::cout << y / (0.01f * height) << "%" << std::endl;
+		std::cout << y / (0.01f * height) << "%" << std::endl;
 
 		float py = y / (float)height;
 		

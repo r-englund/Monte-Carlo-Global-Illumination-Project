@@ -47,7 +47,7 @@ typedef Vector3<float> Color3;
 #include "Primitive.h"
 #include "Plane.h"
 #include "Sphere.h"
-
+#include "Quad.h"
 
 #include "BMPWriter.h"
 #include "Camera.h"

@@ -5,6 +5,7 @@
 
 #define SPHERE          10
 #define PLANE           11
+#define QUAD            12
 
 #define HIT             1
 #define MISS            0
@@ -18,7 +19,7 @@ class Primitive
         bool light;
 
     public :
-		Primitive(): name("Primitive"), light(false){ material = new DiffuseBRDF();}
+		Primitive(Material* material): name("Primitive"), light(false),material(material){}
 
         virtual ~Primitive(){if(material) delete material;};
 

@@ -2,7 +2,7 @@
 
 Scene::Scene()
 {
-    bgColor = Color3(0.5,0.3,0.3);
+    bgColor = Color3(0,0,0);
 	cam = new Camera();
 }
 
@@ -234,37 +234,87 @@ int Scene::Init()
 #endif
 #if SCENE == SCENE_CORNEL
 int Scene::Init(){
-	Primitive* floor	= new Plane(Vector3<float>(0,1,0) ,Vector3<float>(0,0,0));
-	Primitive* Ceiling	= new Plane(Vector3<float>(0,-1,0),Vector3<float>(0,548.8,0));
-	Primitive* back		= new Plane(Vector3<float>(0,0,-1),Vector3<float>(0,0,559.2));
-	Primitive* left	    = new Plane(Vector3<float>(1,0,0) ,Vector3<float>(0,0,0));
-	Primitive* right	= new Plane(Vector3<float>(-1,0,0),Vector3<float>(552.8,0,0));
-	Primitive* light	= new Sphere(Vector3<float>(278,548.8,229.5),116);
+	//Primitive* floor	= new Plane(Vector3<float>(0,1,0) ,Vector3<float>(0,0,0));
+	//Primitive* Ceiling	= new Plane(Vector3<float>(0,-1,0),Vector3<float>(0,548.8,0));
+	//Primitive* back		= new Plane(Vector3<float>(0,0,-1),Vector3<float>(0,0,559.2));
+	//Primitive* left	    = new Plane(Vector3<float>(1,0,0) ,Vector3<float>(0,0,0));
+	//Primitive* right	= new Plane(Vector3<float>(-1,0,0),Vector3<float>(552.8,0,0));
+
 	
+	
+	Vector3<float> corners[3];
+	float z = 200;
+	
+	corners[0] = Vector3<float>(0,0,0);
+	corners[1] = Vector3<float>(0,0,560);
+	corners[2] = Vector3<float>(550,0,0);
+	Primitive* floor	= new Quad(new DiffuseBRDF(),corners);
+	
+	corners[0] = Vector3<float>(550,550,560);
+	corners[1] = Vector3<float>(0,550,560);
+	corners[2] = Vector3<float>(550,550,0);
+	Primitive* Ceiling	= new Quad(new DiffuseBRDF(),corners);
+
+	corners[0] = Vector3<float>(0,0,0);
+	corners[1] = Vector3<float>(0,550,0);
+	corners[2] = Vector3<float>(0,0,560);
+	Primitive* left	    = new Quad(new DiffuseBRDF(),corners);
+
+	corners[0] = Vector3<float>(550,550,560);
+	corners[1] = Vector3<float>(550,550,0);
+	corners[2] = Vector3<float>(550,0,560);
+	Primitive* right	= new Quad(new DiffuseBRDF(),corners);
+
+	corners[0] = Vector3<float>(0,0,560);
+	corners[1] = Vector3<float>(0,550,560);
+	corners[2] = Vector3<float>(550,0,560);
+	Primitive* back	= new Quad(new DiffuseBRDF(),corners);
+
+	
+	corners[0] = Vector3<float>(343,549,227);
+	corners[1] = Vector3<float>(343,549,450);
+	corners[2] = Vector3<float>(180,549,227);
+	Primitive* light	= new Quad(new DiffuseBRDF(),corners);//new Sphere(Vector3<float>(278,548.8,229.5),116);
+	
+	Primitive *sphere1 = new Sphere(new PhongBRDF(),Vector3<float>(90,82,460),82);
+	Primitive *sphere2 = new Sphere(new PhongBRDF(),Vector3<float>(330,282,350),120);
+	Primitive *sphere3 = new Sphere(new PhongBRDF(),Vector3<float>(100,100,150),100);
+	//Primitive *sphere1 = new Sphere(Vector3<float>(90,82,160),82);
+
 	this->object.push_back(floor);
 	this->object.push_back(Ceiling);
 	this->object.push_back(back);
 	this->object.push_back(right);
 	this->object.push_back(left);
 	this->object.push_back(light);
+	this->object.push_back(sphere1);
+	this->object.push_back(sphere2);
+	this->object.push_back(sphere3);
+	//this->object.push_back(quad);
 	
 	floor->GetMaterial()->SetColor	(Color3(1,1,1));
 	Ceiling->GetMaterial()->SetColor(Color3(1,1,1));
 	back->GetMaterial()->SetColor	(Color3(1,1,1));
-	right->GetMaterial()->SetColor	(Color3(0,1,0));
-	left->GetMaterial()->SetColor	(Color3(1,0,0));
+	right->GetMaterial()->SetColor	(Color3(0.2,1,0.2));
+	left->GetMaterial()->SetColor	(Color3(1,0.2,0.2));
 	light->GetMaterial()->SetColor	(Color3(1,1,1));
+	sphere1->GetMaterial()->SetColor	(Color3(1,1,1));
+	sphere2->GetMaterial()->SetColor	(Color3(1,1,1));
+	sphere3->GetMaterial()->SetColor	(Color3(1,1,1));
 	
     floor->GetMaterial()->SetRefract(0.0f);
-	
     Ceiling->GetMaterial()->SetRefract(0.0f);
-	
     back->GetMaterial()->SetRefract(0.0f);
-	
     right->GetMaterial()->SetRefract(0.0f);
-	
     left->GetMaterial()->SetRefract(0.0f);
+
+    sphere1->GetMaterial()->SetRefract(0);
+    sphere2->GetMaterial()->SetRefract(1);
+    sphere3->GetMaterial()->SetRefract(0.5);
 	
+	sphere2->GetMaterial()->SetRefractInd(1.5);
+	sphere3->GetMaterial()->SetRefractInd(1.4);
+
 	light->SetLight(true);
 
 	cam->position = Vector3<float>(278,273,-800);

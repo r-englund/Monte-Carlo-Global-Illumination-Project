@@ -1,19 +1,19 @@
 #include "includes.h"
 
-Plane::Plane(const Vector3<float>& normal, float d) : Primitive()
+Plane::Plane(Material *m,const Vector3<float>& normal, float d) : Primitive(m)
 {
     this->Normal = normal;
     this->DistP = d;
 }
 
-Plane::Plane(const Vector3<float>& normal, const Vector3<float>& point) : Primitive()
+Plane::Plane(Material *m,const Vector3<float>& normal, const Vector3<float>& point) : Primitive(m)
 {
     this->Normal = normal;
     this->PPoint = point;
 }
 
 
-Plane::Plane(const Plane& plane)
+Plane::Plane(const Plane& plane) : Primitive(plane.material)
 {
     this->Normal = plane.Normal;
     this->DistP = plane.DistP;

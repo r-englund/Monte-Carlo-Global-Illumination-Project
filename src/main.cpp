@@ -3,8 +3,6 @@
 
 #include "Windows.h"
 
-const char* wTitle = "title";
-
 RTEngine* renderEngine = NULL;
 Vector3<float> color;
 
@@ -84,9 +82,8 @@ int main(int argc, char** argv)
 	filename("img/c","-test3.bmp",c);
 	filename("img/d","-test4.bmp",d);
 	img1.save(a);
- /*   img2.save(b);
+    img2.save(b);
     img3.save(c);
-    img4.save(d);*/
-
+    img4.save(d);
     return 1;
 }

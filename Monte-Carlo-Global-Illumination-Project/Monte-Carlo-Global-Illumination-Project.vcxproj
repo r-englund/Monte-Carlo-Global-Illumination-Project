@@ -68,6 +68,7 @@
     <ClCompile Include="..\src\Camera.cpp" />
     <ClCompile Include="..\src\main.cpp" />
     <ClCompile Include="..\src\Plane.cpp" />
+    <ClCompile Include="..\src\Quad.cpp" />
     <ClCompile Include="..\src\RandomGenerator.cpp" />
     <ClCompile Include="..\src\RTEngine.cpp" />
     <ClCompile Include="..\src\Scene.cpp" />
@@ -81,6 +82,7 @@
     <ClInclude Include="..\src\includes.h" />
     <ClInclude Include="..\src\Plane.h" />
     <ClInclude Include="..\src\Primitive.h" />
+    <ClInclude Include="..\src\Quad.h" />
     <ClInclude Include="..\src\RandomGenerator.h" />
     <ClInclude Include="..\src\Ray.h" />
     <ClInclude Include="..\src\RTEngine.h" />

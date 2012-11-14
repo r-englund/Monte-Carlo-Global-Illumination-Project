@@ -11,8 +11,8 @@ class Plane : public Primitive
         Vector3<float> PPoint;
 
     public :
-        Plane(const Vector3<float>& normal, float d);
-        Plane(const Vector3<float>& normal, const Vector3<float>& point);
+        Plane(Material *m,const Vector3<float>& normal, float d);
+        Plane(Material *m,const Vector3<float>& normal, const Vector3<float>& point);
         ~Plane(){}
 
         Plane(const Plane& plane);

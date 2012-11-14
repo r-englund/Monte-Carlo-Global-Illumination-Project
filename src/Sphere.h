@@ -12,7 +12,7 @@ class Sphere : public Primitive
         float deradius;
 
     public :
-        Sphere(const Vector3<float>& c, float r);
+        Sphere(Material *m,const Vector3<float>& c, float r);
         ~Sphere(){}
 
         const Vector3<float>& GetCenter(){ return this->center;}
