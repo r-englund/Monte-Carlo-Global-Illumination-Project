@@ -40,8 +40,9 @@ public:
 };
 
 class PhongBRDF : public Material{
+	float _specularity,_kd;
 public:
-	PhongBRDF(){}
+	PhongBRDF(float specularity = 20,float kd = 0.5){_specularity = specularity;_kd = kd;}
 	virtual Vector3<float> BRDF(const Vector3<float>& pos,const Vector3<float>& iDirection,const Vector3<float>& iNormal,const Vector3<float>& oDirection);
 	virtual Vector3<float> randomReflection(const Vector3<float>& pos,const Vector3<float>& iDirection,const Vector3<float>& iNormal, Ray& oRay);
 };

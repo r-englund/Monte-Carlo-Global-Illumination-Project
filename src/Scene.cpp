@@ -276,9 +276,9 @@ int Scene::Init(){
 	corners[2] = Vector3<float>(180,549,227);
 	Primitive* light	= new Quad(new DiffuseBRDF(),corners);//new Sphere(Vector3<float>(278,548.8,229.5),116);
 	
-	Primitive *sphere1 = new Sphere(new PhongBRDF(),Vector3<float>(90,82,460),82);
-	Primitive *sphere2 = new Sphere(new PhongBRDF(),Vector3<float>(330,282,350),120);
-	Primitive *sphere3 = new Sphere(new PhongBRDF(),Vector3<float>(100,100,150),100);
+	Primitive *sphere1 = new Sphere(new PhongBRDF(50,0.2),Vector3<float>(90,82,460),82);
+	Primitive *sphere2 = new Sphere(new PhongBRDF(50,0.6),Vector3<float>(330,282,350),120);
+	Primitive *sphere3 = new Sphere(new PhongBRDF(50,0.0),Vector3<float>(300,100,150),100);
 	//Primitive *sphere1 = new Sphere(Vector3<float>(90,82,160),82);
 
 	this->object.push_back(floor);
@@ -309,8 +309,8 @@ int Scene::Init(){
     left->GetMaterial()->SetRefract(0.0f);
 
     sphere1->GetMaterial()->SetRefract(0);
-    sphere2->GetMaterial()->SetRefract(1);
-    sphere3->GetMaterial()->SetRefract(0.5);
+    sphere2->GetMaterial()->SetRefract(0);
+    sphere3->GetMaterial()->SetRefract(0);
 	
 	sphere2->GetMaterial()->SetRefractInd(1.5);
 	sphere3->GetMaterial()->SetRefractInd(1.4);

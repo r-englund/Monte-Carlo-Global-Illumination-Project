@@ -21,8 +21,8 @@
 
 #define OMP_NUM_THREADS 8
 
-#define SAMPLES_PER_PIXEL 2
-#define TRACEDEPTH     4
+#define SAMPLES_PER_PIXEL 150
+#define TRACEDEPTH     3
 
 #define WIDTH			800
 #define HEIGHT			800

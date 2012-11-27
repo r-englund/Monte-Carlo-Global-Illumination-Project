@@ -180,7 +180,7 @@ Primitive* RTEngine::RayTrace(const Ray& iRay, Color3& oColor, int iDepth, float
 
 			Ray oRay;
 			Color3 reflectance = object->GetMaterial()->randomReflection(pInts,iRay.GetDir(),normal,oRay);
-            if(iDepth < TRACEDEPTH)
+            if(iDepth < TRACEDEPTH && (reflectance[0] != 0 || reflectance[1] != 0 || reflectance[2] != 0))
             {
                 Color3 colorRefl(0,0,0);
                 float tmpDist;
