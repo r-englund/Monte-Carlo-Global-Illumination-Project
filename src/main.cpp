@@ -1,6 +1,8 @@
 
 #include "includes.h"
 
+#include <fstream>
+
 #include "Windows.h"
 
 RTEngine* renderEngine = NULL;
@@ -29,6 +31,50 @@ void filename(const char * start,const char * end,char *out) {
 
 int main(int argc, char** argv)
 {
+	int WIDTH = 400;
+	int HEIGHT = 400;
+	int SAMPLES_PER_PIXEL = 10;
+	int TRACEDEPTH = 5;
+	
+	for(int i = 1;i<argc;i+=2){
+		if(argv[i][1] == 'w'){
+			WIDTH = atoi(argv[i+1]);		
+		}
+		if(argv[i][1] == 'h'){
+			HEIGHT = atoi(argv[i+1]);		
+		}
+		if(argv[i][1] == 's'){
+			SAMPLES_PER_PIXEL = atoi(argv[i+1]);		
+		}
+		if(argv[i][1] == 't'){
+			TRACEDEPTH = atoi(argv[i+1]);		
+		}
+	}
+
+	char *a,*b,*c,*d,*e;
+	a = (char*)malloc(sizeof(char)*32);
+	b = (char*)malloc(sizeof(char)*32);
+	c = (char*)malloc(sizeof(char)*32);
+	d = (char*)malloc(sizeof(char)*32);
+	e = (char*)malloc(sizeof(char)*31);
+	filename("img/","-test1.bmp",a);
+	filename("img/","-test2.bmp",b);
+	filename("img/","-test3.bmp",c);
+	filename("img/","-test4.bmp",d);
+	filename("img/","-info.txt",e);
+
+	std::ofstream info(e);
+	info << "Width: "  << WIDTH << std::endl;
+	info << "Height: " << HEIGHT << std::endl;
+	info << "Trace depth: " << TRACEDEPTH << std::endl;
+	info << "Samples Per Pixel: " << SAMPLES_PER_PIXEL << std::endl;
+	info << "Nummber of threads: " << omp_get_max_threads() << std::endl;
+	info << "Files:" << std::endl;
+	info << '\t' << a << std::endl;
+	info << '\t' << b << std::endl;
+	info << '\t' << c << std::endl;
+	info << '\t' << d << std::endl;
+	
 	srand((unsigned)time(0));
     // create a scene
     Scene* mainScene = new Scene();
@@ -39,7 +85,8 @@ int main(int argc, char** argv)
 
     // setup rendering engine
     renderEngine = new RTEngine(viewplane, mainScene);
-
+	renderEngine->setTraceDepth(TRACEDEPTH);
+	renderEngine->setSamplesPerPixel(SAMPLES_PER_PIXEL);
     // count time
     start = GetTickCount();
     tFrame = GetTickCount();
@@ -48,6 +95,8 @@ int main(int argc, char** argv)
     renderEngine->Render();
 
     tFrame = GetTickCount() - tFrame;
+
+	info << "Rendering time: " << tFrame << "ms" << std::endl;
 
     std::cout << tFrame << " ms/frame" << std::endl;
 
@@ -72,18 +121,15 @@ int main(int argc, char** argv)
 	for(int i = 0;i<6;i++){
 		img4.scale(0);
 	}
-	char *a,*b,*c,*d;
-	a = (char*)malloc(sizeof(char)*33);
-	b = (char*)malloc(sizeof(char)*33);
-	c = (char*)malloc(sizeof(char)*33);
-	d = (char*)malloc(sizeof(char)*33);
-	filename("img/a","-test1.bmp",a);
-	filename("img/b","-test2.bmp",b);
-	filename("img/c","-test3.bmp",c);
-	filename("img/d","-test4.bmp",d);
-	img1.save(a);
+	
+	/*img1.save(a);
     img2.save(b);
-    img3.save(c);
+    img3.save(c);*/
     img4.save(d);
+
+
+
+
+
     return 1;
 }

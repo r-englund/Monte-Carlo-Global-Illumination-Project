@@ -19,13 +19,13 @@
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 
-#define OMP_NUM_THREADS 8
+//#define OMP_NUM_THREADS 8
 
-#define SAMPLES_PER_PIXEL 400
-#define TRACEDEPTH     5
+//#define SAMPLES_PER_PIXEL 10
+//#define TRACEDEPTH     5
 
-#define WIDTH			800
-#define HEIGHT			800
+//#define WIDTH			800
+//#define HEIGHT			800
 
 #define EPSILON         0.001
 

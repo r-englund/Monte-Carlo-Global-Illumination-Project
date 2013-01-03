@@ -84,11 +84,13 @@ Primitive* RTEngine::RayTrace(const Ray& iRay, Color3& oColor, int iDepth, float
         // trace back to light
         // find shadow and local illumination
         unsigned int numObject = this->scene->GetNumObject();
+		unsigned int numLights = 0;
         for(unsigned int i = 0; i < numObject; i++)
         {
             Primitive* light = this->scene->GetObject(i);
             if(light->IsLight())
             {
+				numLights++;
                 // calculate shadow
                 float shade = 1.0f;
                 if(light->GetType() == SPHERE)
@@ -144,6 +146,7 @@ Primitive* RTEngine::RayTrace(const Ray& iRay, Color3& oColor, int iDepth, float
 
             }
         }
+		oColor /= numLights;
         // add reflecting
         //float reflect = object->GetMaterial()->GetReflect();
         float refract = object->GetMaterial()->GetRefract();
@@ -166,10 +169,7 @@ Primitive* RTEngine::RayTrace(const Ray& iRay, Color3& oColor, int iDepth, float
 				Ray ray(pInts,T);
 				ray.SetOriginObject(object);
                 this->RayTrace(ray, colorRefr, iDepth+1, rIndex, tmpDist);
-                // Beer's law
-                Color3 absorb = object->GetMaterial()->GetColor();// * 0.15 * (-tmpDist);
-                Color3 transparancy(expf(absorb[0]), expf(absorb[1]), expf(absorb[2]));
-                oColor += colorRefr * transparancy*(1-localLight)*(refract);
+                oColor += colorRefr * (1-localLight)*(refract);
 			}else{
 				refract = 0;
 			}
@@ -215,7 +215,7 @@ bool RTEngine::Render()
 
     for(unsigned int y = 0; y < height; y++)
     {
-		std::cout << y / (0.01f * height) << "%" << std::endl;
+		std::cout << y / (0.01f * height) << "%   ";
 		float py = y / (float)height;
 
 		#pragma omp parallel for

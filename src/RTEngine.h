@@ -11,7 +11,8 @@ class RTEngine
         ViewPlane* view;
         Scene* scene;
         float pdx, pdy;     //pixel space in x,y
-
+		int SAMPLES_PER_PIXEL;
+		int TRACEDEPTH;
     public :
         RTEngine();
         RTEngine(ViewPlane* vp, Scene* sce);
@@ -20,6 +21,13 @@ class RTEngine
         void InitRender();
         bool Render();
         Primitive* RayTrace(const Ray& iRay, Color3& oColor, int iDepth, float iRIndex, float& oDist);
+
+		void setTraceDepth(int depth){
+			TRACEDEPTH = depth;
+		}
+		void setSamplesPerPixel(int samplesPerPixel){
+			SAMPLES_PER_PIXEL = samplesPerPixel;
+		}
 
         void SetScene(Scene* sc){ this->scene = sc;}
         void SetViewPlane(ViewPlane* vp);
