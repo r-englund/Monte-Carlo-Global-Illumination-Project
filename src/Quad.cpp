@@ -37,9 +37,9 @@ int Quad::Intersect(const Ray& ray, float& dist){
     // find t : paramT which satisfies --> (p-a).n = 0 , (o + dt - a).n = 0
     // paramT = (PPoint - Origin).Normal / Normal.Direction
     float n_d = Dot(this->normal, ray.GetDir());
-    Vector3<float> p_o(this->corner - ray.GetOrigin());
     if( fabs(n_d) > EPSILON)
     {
+		Vector3<float> p_o(this->corner - ray.GetOrigin());
         float paramT = Dot(p_o, normal);
         paramT = paramT / n_d;
         if(paramT > 0)

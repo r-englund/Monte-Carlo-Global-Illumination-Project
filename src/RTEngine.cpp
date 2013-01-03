@@ -151,16 +151,17 @@ Primitive* RTEngine::RayTrace(const Ray& iRay, Color3& oColor, int iDepth, float
 		if((refract > 0) && (iDepth < TRACEDEPTH) )
         {
             float rIndex = object->GetMaterial()->GetRefractInd();
-			if(ret==-1)
-				rIndex = 1.0/rIndex;
+			if(object == iRay.GetOriginObject())
+				rIndex = 1.0;
             float n = iRIndex / rIndex;
+
             Vector3<float> normal = object->GetNormal(pInts) * (float)ret;
 			
             float cosI = -Dot(normal, iRay.GetDir());
             float cosT2 = 1.0f - n*n*(1.0f - cosI * cosI);
             if(cosT2 > 0.0f){
                 Vector3<float> T = (iRay.GetDir()*n) + (normal*(n*cosI-sqrtf(cosT2)));
-                Color3 colorRefr(0,0,0);
+                Color3 colorRefr(0,0,0); 
                 float tmpDist;
 				Ray ray(pInts,T);
 				ray.SetOriginObject(object);
@@ -190,7 +191,6 @@ Primitive* RTEngine::RayTrace(const Ray& iRay, Color3& oColor, int iDepth, float
 					oColor += reflectance*colorRefl*(1-localLight)*(1-refract);
             }
         }
-        //// add refracting
         
 
     }
@@ -216,9 +216,7 @@ bool RTEngine::Render()
     for(unsigned int y = 0; y < height; y++)
     {
 		std::cout << y / (0.01f * height) << "%" << std::endl;
-
 		float py = y / (float)height;
-		
 
 		#pragma omp parallel for
         for(int x = 0; x < width; x++)
@@ -227,19 +225,17 @@ bool RTEngine::Render()
 			float px = x / (float)width;
 			Vector3<float> pColor;
             for(int i = 0;i<SAMPLES_PER_PIXEL;i++){
-				float ox = dpx * rand()/(float)RAND_MAX;
-				float oy = dpy * rand()/(float)RAND_MAX;
+				float ox = dpx * RandomGenerator::GetRandom();
+				float oy = dpy * RandomGenerator::GetRandom();
 
 				Ray ray = GetScene()->getCamera()->RayToPixel(px+ox, py+oy);
 
-				// tracing the ray
 				float dist;
 				Vector3<float> tmpColor;
 				this->RayTrace(ray, tmpColor, 1, 1.0, dist);
 				pColor += tmpColor;
 			}
 			this->view->SetColor(pColor/SAMPLES_PER_PIXEL, x, y);
-			//this->view->SetColor(pColor, x, y);
         }
     }
     return true;

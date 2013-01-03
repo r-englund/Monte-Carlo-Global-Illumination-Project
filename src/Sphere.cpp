@@ -10,10 +10,10 @@ Sphere::Sphere(Material *m,const Vector3<float>& c, float r) : Primitive(m)
 
 int Sphere::Intersect(const Ray& iRay, float& ioDist)
 {
-	if(this == iRay.GetOriginObject())
-		return MISS;
+	//if(this == iRay.GetOriginObject())
+	//	return MISS;
     int ret = MISS;
-    Vector3<float> o_c(iRay.GetOrigin() - this->center);
+	Vector3<float> o_c(iRay.GetOrigin()+iRay.GetDir()*0.0001 - this->center);
     float a = Dot(iRay.GetDir(), iRay.GetDir());
     float b = Dot(o_c, iRay.GetDir()) * 2;
     float c = Dot(o_c, o_c) - this->radius2;

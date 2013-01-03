@@ -294,12 +294,12 @@ int Scene::Init(){
 	
 	floor->GetMaterial()->SetColor	(Color3(1,1,1));
 	Ceiling->GetMaterial()->SetColor(Color3(1,1,1));
-	back->GetMaterial()->SetColor	(Color3(1,1,1));
+	back->GetMaterial()->SetColor	(Color3(0.2,0.2,1));
 	right->GetMaterial()->SetColor	(Color3(0.2,1,0.2));
 	left->GetMaterial()->SetColor	(Color3(1,0.2,0.2));
 	light->GetMaterial()->SetColor	(Color3(1,1,1));
 	sphere1->GetMaterial()->SetColor	(Color3(1,1,1));
-	sphere2->GetMaterial()->SetColor	(Color3(1,1,1));
+	sphere2->GetMaterial()->SetColor	(Color3(1,0,1));
 	sphere3->GetMaterial()->SetColor	(Color3(1,1,1));
 	
     floor->GetMaterial()->SetRefract(0.0f);
@@ -309,11 +309,11 @@ int Scene::Init(){
     left->GetMaterial()->SetRefract(0.0f);
 
     sphere1->GetMaterial()->SetRefract(0);
-    sphere2->GetMaterial()->SetRefract(0);
-    sphere3->GetMaterial()->SetRefract(0);
+    sphere2->GetMaterial()->SetRefract(0.5);
+    sphere3->GetMaterial()->SetRefract(0.5);
 	
 	sphere2->GetMaterial()->SetRefractInd(1.5);
-	sphere3->GetMaterial()->SetRefractInd(1.4);
+	sphere3->GetMaterial()->SetRefractInd(1.5);
 
 	light->SetLight(true);
 
