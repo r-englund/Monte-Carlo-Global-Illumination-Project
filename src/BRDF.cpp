@@ -1,10 +1,10 @@
 #include "includes.h"
 
 Vector3<float> DiffuseBRDF::BRDF(const Vector3<float>& pos,const Vector3<float>& iDirection,const Vector3<float>& iNormal,const Vector3<float>& oDirection){
-	assert(floatEquals(iNormal.Length2(),1));
+	/*assert(floatEquals(iNormal.Length2(),1));
 	assert(floatEquals(oDirection.Length2(),1));
 	assert(floatEquals(iDirection.Length2(),1));
-	
+	*/
 	float i = Dot(iNormal,oDirection);
 	if(i < 0)
 		return Vector3<float>(0,0,0);
@@ -12,8 +12,8 @@ Vector3<float> DiffuseBRDF::BRDF(const Vector3<float>& pos,const Vector3<float>&
 }
 
 Vector3<float> DiffuseBRDF::randomReflection(const Vector3<float>& pos,const Vector3<float>& iDirection,const Vector3<float>& iNormal,Ray& oRay){
-	assert(floatEquals(iNormal.Length2(),1));
-	assert(floatEquals(iDirection.Length2(),1));
+	//assert(floatEquals(iNormal.Length2(),1));
+	//assert(floatEquals(iDirection.Length2(),1));
 
 	float azimuth,elevation;
 	azimuth   = 360*(rand()/(float)(RAND_MAX));
@@ -34,9 +34,9 @@ Vector3<float> DiffuseBRDF::randomReflection(const Vector3<float>& pos,const Vec
 }
 
 Vector3<float> PhongBRDF::BRDF(const Vector3<float>& pos,const Vector3<float>& iDirection,const Vector3<float>& iNormal,const Vector3<float>& oDirection){
-	assert(floatEquals(iNormal.Length2(),1));
+	/*assert(floatEquals(iNormal.Length2(),1));
 	assert(floatEquals(oDirection.Length2(),1));
-	assert(floatEquals(iDirection.Length2(),1));
+	assert(floatEquals(iDirection.Length2(),1));*/
 
 	Vector3<float> reflection = iDirection -  iNormal *(2.0f * (Dot(iDirection, iNormal)));
 
@@ -53,8 +53,8 @@ Vector3<float> PhongBRDF::BRDF(const Vector3<float>& pos,const Vector3<float>& i
 }
 
 Vector3<float> PhongBRDF::randomReflection(const Vector3<float>& pos,const Vector3<float>& iDirection,const Vector3<float>& iNormal,Ray& oRay){
-	assert(floatEquals(iNormal.Length2(),1));
-	assert(floatEquals(iDirection.Length2(),1));
+	//assert(floatEquals(iNormal.Length2(),1));
+	//assert(floatEquals(iDirection.Length2(),1));
 	
 	glm::vec3 side(0,0,1),R,N(iNormal[0],iNormal[1],iNormal[2]),V(iDirection[0],iDirection[1],iDirection[2]);
 	R = glm::reflect(V,N);

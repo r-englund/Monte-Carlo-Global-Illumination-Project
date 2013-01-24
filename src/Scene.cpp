@@ -1,5 +1,10 @@
 #include "includes.h"
 
+#include <fstream>
+#include <map>
+#include <string>
+
+
 Scene::Scene()
 {
     bgColor = Color3(0,0,0);
@@ -327,3 +332,213 @@ int Scene::Init(){
 	return SC_SUCCESS;
 }
 #endif
+
+
+Scene* Scene::LoadScene(const char *filename){
+	Scene *scene = new Scene();
+	std::map<std::string,Material *> materials;
+
+
+	std::ifstream inFile;
+	inFile.open(filename);
+	if(!inFile.is_open()){
+		std::cerr << "Could not open file"  << filename<< std::endl;
+		return 0;
+	}
+
+	char line[4096];
+	while(!inFile.eof()){
+		char peeked = inFile.peek();
+		if(peeked == '#' || peeked == '\0'){
+			inFile.getline(line,256);
+			continue;
+		}
+		else if(peeked == 'm'){ //material
+			inFile.getline(line,256,' ');
+			inFile.getline(line,256,' ');
+			if(line[0] == 'd'){
+				DiffuseBRDF *mat = new DiffuseBRDF();
+				float a,b,c;
+				
+				char name[256];
+				inFile.getline(name,256,' ');
+				
+				inFile.getline(line,256,' ');
+				a = atof(line);
+				mat->SetRefractInd(a);
+
+				inFile.getline(line,256,' ');
+				a = atof(line);
+				mat->SetRefract(a);
+
+
+
+
+				inFile.getline(line,256,' ');
+				a = atof(line);
+				inFile.getline(line,256,' ');
+				b = atof(line);
+				inFile.getline(line,256);
+				c = atof(line);
+
+				mat->SetColor(Color3(a,b,c));
+				materials[std::string(name)] = mat;
+			}
+			else if(line[0] == 'p'){
+				float a,b,c;
+				
+				char name[256];
+				inFile.getline(name,256,' ');
+				
+				inFile.getline(line,256,' ');
+				a = atof(line);
+				inFile.getline(line,256,' ');
+				b = atof(line);
+				PhongBRDF *mat = new PhongBRDF(a,b);
+				
+				
+				inFile.getline(line,256,' ');
+				a = atof(line);
+				mat->SetRefractInd(a);
+
+				inFile.getline(line,256,' ');
+				a = atof(line);
+				mat->SetRefract(a);
+
+
+				inFile.getline(line,256,' ');
+				a = atof(line);
+				inFile.getline(line,256,' ');
+				b = atof(line);
+				inFile.getline(line,256);
+				c = atof(line);
+
+				mat->SetColor(Color3(a,b,c));
+				materials[std::string(name)] = mat;
+			}
+			else{
+				assert("Unkown material type" && false);
+			}
+		}
+		else if(peeked == 'q'){ //square
+			
+			char material[256];
+			float corner1x,corner1y,corner1z,corner2x,corner2y,corner2z,corner3x,corner3y,corner3z;
+			bool light;
+
+
+			
+			inFile.getline(line,256,' ');
+			inFile.getline(material,256,' ');
+
+			
+			inFile.getline(line,256,' ');
+			corner1x = atof(line);
+			inFile.getline(line,256,' ');
+			corner1y = atof(line);
+			inFile.getline(line,256,' ');
+			corner1z = atof(line);
+			
+			inFile.getline(line,256,' ');
+			corner2x = atof(line);
+			inFile.getline(line,256,' ');
+			corner2y = atof(line);
+			inFile.getline(line,256,' ');
+			corner2z = atof(line);
+			
+			inFile.getline(line,256,' ');
+			corner3x = atof(line);
+			inFile.getline(line,256,' ');
+			corner3y = atof(line);
+			inFile.getline(line,256,' ');
+			corner3z = atof(line);
+
+			
+			inFile.getline(line,256);
+			light = line[0] == '1';
+
+			Vector3<float> corners[3];
+			corners[0] = Vector3<float>(corner1x,corner1y,corner1z);
+			corners[1] = Vector3<float>(corner2x,corner2y,corner2z);
+			corners[2] = Vector3<float>(corner3x,corner3y,corner3z);
+
+			Quad *q = new Quad(materials[std::string(material)],corners);
+			q->SetLight(light);
+			scene->object.push_back(q);
+		}
+		else if(peeked == 's'){ //sphere
+			char material[256];
+			float centerx,centery,centerz,radius;
+			bool light;
+
+
+			inFile.getline(line,256,' ');
+			inFile.getline(material,256,' ');
+
+			
+			inFile.getline(line,256,' ');
+			centerx = atof(line);
+			inFile.getline(line,256,' ');
+			centery = atof(line);
+			inFile.getline(line,256,' ');
+			centerz = atof(line);
+			
+			inFile.getline(line,256,' ');
+			radius = atof(line);
+			
+			inFile.getline(line,256);
+			light = line[0] == '1';
+
+			Sphere *s = new Sphere(materials[std::string(material)],Vector3<float>(centerx,centery,centerz),radius);
+			s->SetLight(light);
+			scene->object.push_back(s);
+		}
+		else if(peeked == 'c'){ //cam
+			inFile.getline(line,256,' ');
+			//posx 
+			inFile.getline(line,256,' ');
+			scene->cam->position[0] = atof(line);
+			//posy 
+			inFile.getline(line,256,' ');
+			scene->cam->position[1] = atof(line);
+			//posz 
+			inFile.getline(line,256,' ');
+			scene->cam->position[2] = atof(line);
+
+			//dirx 
+			inFile.getline(line,256,' ');
+			scene->cam->direction[0] = atof(line);
+			//diry 
+			inFile.getline(line,256,' ');
+			scene->cam->direction[1] = atof(line);
+			//dirz 
+			inFile.getline(line,256,' ');
+			scene->cam->direction[2] = atof(line);
+
+			//upx 
+			inFile.getline(line,256,' ');
+			scene->cam->upDirection[0] = atof(line);
+			//upy 
+			inFile.getline(line,256,' ');
+			scene->cam->upDirection[1] = atof(line);
+			//upz 
+			inFile.getline(line,256,' ');
+			scene->cam->upDirection[2] = atof(line);
+			//focalLength 
+			inFile.getline(line,256,' ');
+			scene->cam->focalLength = atof(line);
+			//width 
+			inFile.getline(line,256,' ');
+			scene->cam->width = atof(line);
+			//height
+			inFile.getline(line,256);
+			scene->cam->height = atof(line);
+			continue;
+		}else{
+			inFile.getline(line,256);
+		}
+	}
+
+
+	return scene;
+}

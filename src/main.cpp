@@ -35,7 +35,9 @@ int main(int argc, char** argv)
 	int HEIGHT = 400;
 	int SAMPLES_PER_PIXEL = 10;
 	int TRACEDEPTH = 5;
-	
+	Scene* mainScene = 0;
+
+
 	for(int i = 1;i<argc;i+=2){
 		if(argv[i][1] == 'w'){
 			WIDTH = atoi(argv[i+1]);		
@@ -48,6 +50,10 @@ int main(int argc, char** argv)
 		}
 		if(argv[i][1] == 't'){
 			TRACEDEPTH = atoi(argv[i+1]);		
+		}
+
+		if(argv[i][1] == 'S'){
+			mainScene = Scene::LoadScene(argv[i+1]);		
 		}
 	}
 
@@ -77,8 +83,11 @@ int main(int argc, char** argv)
 	
 	srand((unsigned)time(0));
     // create a scene
-    Scene* mainScene = new Scene();
-    mainScene->Init();
+	if(mainScene == 0){
+		mainScene = new Scene();
+		mainScene->Init();
+	} 
+    
 
     // create an image plane
     ViewPlane* viewplane = new ViewPlane(WIDTH, HEIGHT);

@@ -1,0 +1,53 @@
+#camera is defined as:
+#c posx posy posz dirx diry dirz upx upy upz focalLength width height
+
+c 278 273 -800 0 0 1 0 1 0 0.035 0.025 0.025
+
+
+#BRDFS:
+#d = diffuse
+#p = phong
+
+#materials are defined as:
+#Diffuse:
+#m type name refreactionIndex refractionRatio colorR colorG colorB 
+#Phong:
+#m type name shininess diffuseness refreactionIndex refractionRatio colorR colorG colorB 
+
+m d redDiffuse 0 0 1 0.2 0.2
+m d greenDiffuse 0 0 0.2 1 0.2
+m d blueDiffuse 0 0 0.2 0.2 1
+m d whiteDiffuse 0 0 1 1 1
+
+m p sphere1 50 0.2 1 0 1 1 1
+m p sphere2 50 0.6 1.5 0.5 1 0 1
+m p sphere3 50 0.0 1.5 0.5 1 1 1
+
+#a square is defined as:
+#q material corner1x corner1y corner1z corner2x corner2y corner2z corner3x corner3y corner3z light
+
+#a sphere is defined as 
+#s material centerx centery centerz radius light
+
+#floor
+q whiteDiffuse 0 0 0 0 0 560 550 0 0 0
+
+#cieling
+q whiteDiffuse 550 550 560 0 550 560 550 550 0 0
+
+#right wall
+q redDiffuse 550 550 560 550 550 0 550 0 560 0
+
+#left wall
+q greenDiffuse 0 0 0 0 550 0 0 0 560 0
+
+#back wall
+q blueDiffuse 0 0 560 0 550 560 550 0 560 0
+
+#light
+q whiteDiffuse 343 549 227 343 549 450 180 549 227 1
+
+
+s sphere1 90 82 460 82 0
+s sphere2 330 282 350 120 0
+s sphere3 300 100 150 100 1

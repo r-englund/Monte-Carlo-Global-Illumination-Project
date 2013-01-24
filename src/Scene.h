@@ -19,12 +19,17 @@ class Scene
         const Color3& GetBGColor(){ return this->bgColor;}
 		Camera* getCamera(){return cam;}
 
+
+		static Scene* LoadScene(const char *filename);
+
     private :
         // objects in the scene
         std::vector<Primitive*> object;
         // background color
         Color3 bgColor;
 		Camera *cam;
+
+
 };
 
 #endif
