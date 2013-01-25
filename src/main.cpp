@@ -16,12 +16,56 @@ bool floatEquals(float a,float b,float e){
 	return abs(a-b)<e;
 }
 
+void month(char* out,int month){
+	switch(month){
+	case 0:
+		out = "jan\0";
+		break;
+	case 1:
+		out = "feb\0";
+		break;
+	case 2:
+		out = "mar\0";
+		break;
+	case 3:
+		out = "apr\0";
+		break;
+	case 4:
+		out = "may\0";
+		break;
+	case 5:
+		out = "jun\0";
+		break;
+	case 6:
+		out = "jul\0";
+		break;
+	case 7:
+		out = "aug\0";
+		break;
+	case 8:
+		out = "sep\0";
+		break;
+	case 9:
+		out = "oct\0";
+		break;
+	case 10:
+		out = "nov\0";
+		break;
+	case 11:
+		out = "dec\0";
+		break;
+	}
+}
+
 void filename(const char * start,const char * end,char *out) {
 	time_t t = time(0);
 	struct tm * now = localtime( & t );
+
+	char* mon = (char*)malloc(sizeof(char)*4);
+	month(mon,now->tm_mon);
 	sprintf(out,"%s%d-%d-%d-%d-%d-%d%s",start,
 									now->tm_year+1900,
-									now->tm_mon,
+									mon,
 									now->tm_mday,
 									now->tm_hour,
 									now->tm_min,
@@ -58,11 +102,11 @@ int main(int argc, char** argv)
 	}
 
 	char *a,*b,*c,*d,*e;
-	a = (char*)malloc(sizeof(char)*32);
-	b = (char*)malloc(sizeof(char)*32);
-	c = (char*)malloc(sizeof(char)*32);
-	d = (char*)malloc(sizeof(char)*32);
-	e = (char*)malloc(sizeof(char)*31);
+	a = (char*)malloc(sizeof(char)*34);
+	b = (char*)malloc(sizeof(char)*34);
+	c = (char*)malloc(sizeof(char)*34);
+	d = (char*)malloc(sizeof(char)*34);
+	e = (char*)malloc(sizeof(char)*33);
 	filename("img/","-test1.bmp",a);
 	filename("img/","-test2.bmp",b);
 	filename("img/","-test3.bmp",c);
@@ -136,9 +180,20 @@ int main(int argc, char** argv)
     img3.save(c);*/
     img4.save(d);
 
+	std::cout << "closing file" << std::endl;
+	info.close();
+	
+	std::cout << "after closing file" << std::endl;
+	free(a);std::cout << "a" << std::endl;
+	free(b);std::cout << "b" << std::endl;
+	free(c);std::cout << "c" << std::endl;
+	free(d);std::cout << "d" << std::endl;
+	free(e);std::cout << "e" << std::endl;
+	delete mainScene;std::cout << "mains" << std::endl;
+	delete viewplane;std::cout << "viewp" << std::endl;
+	delete renderEngine;std::cout << "rendere" << std::endl;
 
 
-
-
-    return 1;
+	std::cout << "DONE" << std::endl;
+    return 0;
 }

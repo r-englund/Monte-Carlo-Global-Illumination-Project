@@ -13,7 +13,7 @@ class Sphere : public Primitive
 
     public :
         Sphere(Material *m,const Vector3<float>& c, float r);
-        ~Sphere(){}
+        virtual ~Sphere(){}
 
         const Vector3<float>& GetCenter(){ return this->center;}
         float GetRadius(){ return this->radius;}

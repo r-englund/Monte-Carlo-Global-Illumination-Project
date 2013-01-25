@@ -13,12 +13,16 @@ Scene::Scene()
 
 Scene::~Scene()
 {
+	std::cout << "Deleting scene" << this->object.size() << std::endl;
     for(unsigned int i = 0; i < this->object.size(); i++)
     {
+		std::cout << i << " " << this->object[i] << std::endl;
         if(this->object[i])
             delete this->object[i];
     }
+	std::cout << "Deleting cam" << std::endl;
 	delete cam;
+	std::cout << "cam Deleted" << std::endl;
 }
 
 #if SCENE == SCENE_OUR

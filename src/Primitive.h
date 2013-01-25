@@ -21,7 +21,7 @@ class Primitive
     public :
 		Primitive(Material* material): name("Primitive"), light(false),material(material){}
 
-        virtual ~Primitive(){if(material) delete material;};
+        virtual ~Primitive(){};
 
         bool IsLight(){return this->light;}
         void SetLight(bool l){ this->light = l;}

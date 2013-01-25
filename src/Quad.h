@@ -5,7 +5,7 @@ class Quad :
 {
 public:
 	Quad(Material *m,Vector3<float> corners[3]);
-	~Quad(void);
+	virtual ~Quad(void);
 
 	
     virtual int GetType();

@@ -34,7 +34,7 @@ void RTEngine::SetViewPlane(ViewPlane* vp)
 Primitive* RTEngine::RayTrace(const Ray& iRay, Color3& oColor, int iDepth, float iRIndex, float& oDist)
 {
     if(iDepth > TRACEDEPTH) return 0;
-	assert(floatEquals(iRay.GetDir().Length2(),1));
+	//assert(floatEquals(iRay.GetDir().Length2(),1));
 
 
     oDist = std::numeric_limits<float>::max();
